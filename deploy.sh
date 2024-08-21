@@ -36,8 +36,8 @@ MY_GCP_SERVICES=(
     'run.googleapis.com'  # Cloud Run
     'artifactregistry.googleapis.com'  # Artifact Registry
     'cloudbuild.googleapis.com'  # Cloud Build
-    'containeranalysis.googleapis.com'  # Container Analysis
-    'containerscanning.googleapis.com'  # Container Scanning
+   # 'containeranalysis.googleapis.com'  # Container Analysis
+   # 'containerscanning.googleapis.com'  # Container Scanning
 )
 # Enable each GCP service
 for MY_GCP_SERVICE in "${MY_GCP_SERVICES[@]}"; do
@@ -62,7 +62,7 @@ fi
 echo
 
 # Set location
-MY_GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-"us-central1"}
+MY_GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-"us-east5"}
 echo "Google Cloud location: $MY_GOOGLE_CLOUD_LOCATION"
 
 # Create Artifact Registry for Docker cointainer images
