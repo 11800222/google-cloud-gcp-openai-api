@@ -50,7 +50,7 @@ debug = os.environ.get("DEBUG", False)
 print(f"Endpoint: http://{host}:{port}/")
 # Google Cloud
 project = os.environ.get("GOOGLE_CLOUD_PROJECT_ID", project_id)
-location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-east5")
+location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
 print(f"Google Cloud project identifier: {project}")
 print(f"Google Cloud location: {location}")
 # LLM chat model name to use
@@ -113,6 +113,7 @@ class ChatBody(BaseModel):
     max_tokens: Optional[int]
     temperature: Optional[float]
     top_p: Optional[float]
+    region: Optional[str]
 
 
 @app.get("/")
@@ -280,6 +281,7 @@ async def chat_completions(body: ChatBody, request: Request):
     temperature = float(body.temperature or default_temperature)
     top_k = int(default_top_k)
     top_p = float(body.top_p or default_top_p)
+    region = body.region or "us-east5"
     max_output_tokens = int(body.max_tokens or default_max_output_tokens)
     # Note: Max output token:
     # - gemini-pro: 8192
@@ -307,7 +309,7 @@ async def chat_completions(body: ChatBody, request: Request):
         temperature=temperature,
         top_k=top_k,
         top_p=top_p,
-        location=location,
+        location=region,
         max_output_tokens=max_output_tokens
     )
 

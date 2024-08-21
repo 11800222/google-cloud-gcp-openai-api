@@ -62,7 +62,7 @@ fi
 echo
 
 # Set location
-MY_GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-"us-east5"}
+MY_GOOGLE_CLOUD_LOCATION=${GOOGLE_CLOUD_LOCATION:-"us-central1"}
 echo "Google Cloud location: $MY_GOOGLE_CLOUD_LOCATION"
 
 # Create Artifact Registry for Docker cointainer images
