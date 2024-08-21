@@ -26,6 +26,7 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from langchain_google_vertexai.model_garden import ChatAnthropicVertex
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
@@ -35,7 +36,7 @@ from google.cloud import aiplatform
 
 # LangChain
 import langchain
-from langchain_community.chat_models import ChatVertexAI
+from langchain_google_vertexai.chat_models import ChatVertexAI
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 
@@ -49,11 +50,11 @@ debug = os.environ.get("DEBUG", False)
 print(f"Endpoint: http://{host}:{port}/")
 # Google Cloud
 project = os.environ.get("GOOGLE_CLOUD_PROJECT_ID", project_id)
-location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-east5")
 print(f"Google Cloud project identifier: {project}")
 print(f"Google Cloud location: {location}")
 # LLM chat model name to use
-model_name = os.environ.get("MODEL_NAME", "chat-bison")
+model_name = os.environ.get("MODEL_NAME", "claude-3-5-sonnet@20240620")
 print(f"LLM chat model name: {model_name}")
 # Token limit determines the maximum amount of text output from one prompt
 default_max_output_tokens = os.environ.get("MAX_OUTPUT_TOKENS", "512")
@@ -301,11 +302,12 @@ async def chat_completions(body: ChatBody, request: Request):
         max_output_tokens = 1024
 
     # Wrapper around Vertex AI large language models
-    llm = ChatVertexAI(
+    llm = ChatAnthropicVertex(
         model_name=model_name,
         temperature=temperature,
         top_k=top_k,
         top_p=top_p,
+        location=location,
         max_output_tokens=max_output_tokens
     )
 
