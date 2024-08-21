@@ -113,7 +113,6 @@ class ChatBody(BaseModel):
     max_tokens: Optional[int]
     temperature: Optional[float]
     top_p: Optional[float]
-    region: Optional[str]
 
 
 @app.get("/")
@@ -281,7 +280,7 @@ async def chat_completions(body: ChatBody, request: Request):
     temperature = float(body.temperature or default_temperature)
     top_k = int(default_top_k)
     top_p = float(body.top_p or default_top_p)
-    region = body.region or "us-east5"
+    region = "us-east5"
     max_output_tokens = int(body.max_tokens or default_max_output_tokens)
     # Note: Max output token:
     # - gemini-pro: 8192
