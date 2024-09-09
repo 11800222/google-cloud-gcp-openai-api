@@ -26,6 +26,7 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from langchain_core.messages import SystemMessage
 from langchain_google_vertexai.model_garden import ChatAnthropicVertex
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
@@ -46,7 +47,7 @@ credentials, project_id = google.auth.default()
 # Get environment variable
 host = os.environ.get("HOST", "0.0.0.0")
 port = int(os.environ.get("PORT", 8000))
-debug = os.environ.get("DEBUG", False)
+debug = True
 print(f"Endpoint: http://{host}:{port}/")
 # Google Cloud
 project = os.environ.get("GOOGLE_CLOUD_PROJECT_ID", project_id)
@@ -66,7 +67,7 @@ default_top_k = os.environ.get("TOP_K", "40")
 # Tokens are selected from most probable to least until the sum of their
 default_top_p = os.environ.get("TOP_P", "0.8")
 # API key
-default_api_key = f"sk-{secrets.token_hex(21)}"
+default_api_key = "sk-905c1eada2f1caeafc2ff5d7ea1a828aa882e0dfae"
 api_key = os.environ.get("OPENAI_API_KEY", default_api_key)
 print(f"API key: {api_key}")
 
@@ -328,8 +329,10 @@ async def chat_completions(body: ChatBody, request: Request):
     )
     # Add history
     for message in body.messages:
-        # if message.role == 'system':
-        #     system_prompt = message.content
+        if message.role == 'system':
+            memory.chat_memory.add_message(SystemMessage(
+                content=message.content
+            ))
         if message.role == 'user':
             memory.chat_memory.add_user_message(message.content)
         elif message.role == 'assistant':
